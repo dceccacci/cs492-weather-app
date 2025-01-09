@@ -63,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
   // Make sure that it's dynamic so if you add/remove names from the list, it still functions.
 
   final List<String> _myNames = [
-    "Dan",
+    "Devon",
     "Steve"
   ];
 
