@@ -64,9 +64,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final List<String> _myNames = [
     "Devon",
-    "Steve"
+    "Steve",
+    "Sue",
+    "Conan"
   ];
 
+  int index = 0;
   String? _myName;
 
   @override
@@ -77,8 +80,12 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void onPressed(){
+    index++;
+    if(index == _myNames.length){
+      index = 0;
+    }
     setState(() {
-      _myName = _myNames[1];
+      _myName = _myNames[index];
     });
     
   }
