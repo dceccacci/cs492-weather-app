@@ -1,4 +1,5 @@
 import 'dart:convert' as convert;
+import 'dart:ffi';
 
 import 'package:http/http.dart' as http;
 
@@ -13,6 +14,9 @@ void main() async {
   Map<String, dynamic> forecastJsonData = await getJsonFromUrl(forecastUrl);
   Map<String, dynamic> forecastHourlyJsonData = await getJsonFromUrl(forecastHourlyUrl);
 
+  processForecasts(forecastJsonData["properties"]["periods"]);
+  processForecasts(forecastHourlyJsonData["properties"]["periods"]);
+
   return;
 }
 
@@ -21,10 +25,15 @@ Future<Map<String, dynamic>> getJsonFromUrl(String url) async {
   return convert.jsonDecode(r.body);
 }
 
-void processForecasts(Map<String, dynamic> forecasts){
+void processForecasts(List<dynamic> forecasts){
   // TODO: pass the array of forcasts in from main
   // For loop through the forecasts and process each forecast with the
   // processForecast function below
+
+  // ignore: unused_local_variable
+  for(var forecast in forecasts){
+    processForecast(forecast);
+  }
 }
 
 void processForecast(Map<String, dynamic> forecast){
@@ -32,5 +41,13 @@ void processForecast(Map<String, dynamic> forecast){
   // The proper values that will be useful. i.e. temperature, shortForecast, longForecast
   // for now, don't return anything, just assign values for each
   // i.e. String shortForcast = "";
+  String name = forecast["name"];
+  String startTime = forecast["startTime"];
+  String endTime = forecast["startTime"];
+  bool isDaytime = forecast["isDaytime"];
+  int temperature = forecast["temperature"];
+  String temperatureUnit = forecast["temperatureUnit"];
+  String shortForcast = forecast["shortForecast"];
+  String longForecast = forecast["detailedForecast"];
 
 }
