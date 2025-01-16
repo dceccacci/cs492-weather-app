@@ -47,12 +47,21 @@ class Forecast{
   // TODO: Finish the toString() function, printing every value
   @override
   String toString(){
-    return "name: ${name}\n" // TODO: if this is null, print "None"
-      "isDaytime: ${isDaytime ? "Yes" : "No"}\n";
+    return "name: ${name ?? "None"}\n" // TODO: if this is null, print "None"
+      "isDaytime: ${isDaytime ? "Yes" : "No"}\n"
+      "temperature: ${temperature}\n"
+      "temperature unit: ${temperatureUnit}\n"
+      "wind speed: ${windSpeed}\n"
+      "wind direction: ${windDirection}\n"
+      "short forecast: ${shortForecast}\n"
+      "detailed forecast: ${detailedForecast}\n"
+      "precipitation probability: ${precipitationProbability}\n"
+      "humidity: ${humidity}\n"
+      "dewpoint: ${dewpoint}\n";
   }
 }
 
-void getForecastFromPoints(double lat, double lon) async{
+Future <List<Forecast>> getForecastFromPoints(double lat, double lon) async{
   // TODO: Update this function to return a list of forecasts
   // make a request to the weather api using the latitude and longitude and decode the json data
   String pointsUrl = "https://api.weather.gov/points/${lat},${lon}";
@@ -63,12 +72,11 @@ void getForecastFromPoints(double lat, double lon) async{
 
   // make a request to the forecastJson url and decode the json data
   Map<String, dynamic> forecastJson = await getRequestJson(forecastUrl);
-  processForecasts(forecastJson["properties"]["periods"]);
+  return processForecasts(forecastJson["properties"]["periods"]);
 
-  return null;
 }
 
-void getForecastHourlyFromPoints(double lat, double lon) async{
+Future <List <Forecast>> getForecastHourlyFromPoints(double lat, double lon) async{
   // TODO: Update this function to return a list of forecasts
   // make a request to the weather api using the latitude and longitude and decode the json data
   String pointsUrl = "https://api.weather.gov/points/${lat},${lon}";
@@ -79,16 +87,19 @@ void getForecastHourlyFromPoints(double lat, double lon) async{
 
   // make a request to the forecastHourlyJson url and decode the json data
   Map<String, dynamic> forecastHourlyJson = await getRequestJson(forecastHourlyUrl);
-  processForecasts(forecastHourlyJson["properties"]["periods"]);
+  return processForecasts(forecastHourlyJson["properties"]["periods"]);
 
-  return null;
 }
 
-void processForecasts(List<dynamic> forecasts){
+List<Forecast> processForecasts(List<dynamic> forecasts){
   // TODO: Change this function to return a List of Forecast Objects
+  List<Forecast> forecastObjList = [];
+
   for (dynamic forecast in forecasts){
-    Forecast forecastObj = Forecast.fromJson(forecast);
+    forecastObjList.add(Forecast.fromJson(forecast));
   }
+
+  return forecastObjList; 
 }
 
 void processForecast(Map<String, dynamic> forecast){
