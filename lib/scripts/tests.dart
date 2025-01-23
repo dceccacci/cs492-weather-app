@@ -5,6 +5,23 @@ import 'location.dart' as location;
 //   testForecast();
 // }
 
+void testLocation() async {
+
+  List<Map<String, String>> testLocations = [];
+  testLocations.add({"city": "Portland", "state": "OR", "zip": "97206"});
+  testLocations.add({"city": "Portland", "state": "ME", "zip": ""});
+  testLocations.add({"city": "Seattle", "state": "WA", "zip": ""});
+  testLocations.add({"city": "New York", "state": "NY", "zip": ""});
+  testLocations.add({"city": "Santa Clause", "state": "IN", "zip": ""});
+
+  for (Map<String, String> testLocation in testLocations) {
+    location.Location? loc = await location.getLocationFromAddress(testLocation["city"]!, testLocation["state"]!, testLocation["zip"]!);
+    continue;
+  }
+  
+
+}
+
 
 void testForecast() async {
 // testing with Bend, OR coordinates
