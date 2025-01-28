@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:weatherapp/scripts/tests.dart' as tests;
+import 'package:weatherapp/scripts/location.dart' as location;
+import 'package:weatherapp/scripts/forecast.dart' as forecast;
 
 void main() {
   runApp(const MyApp());
@@ -58,13 +59,34 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
+  List<forecast.Forecast> _forecasts = [];
+  location.Location? _location;
+
   @override
   void initState() {
     super.initState();
+    setLocation();
 
-    // run tests initially
-    tests.testLocation();
   }
+
+  Future<List<forecast.Forecast>> getForecasts(location.Location currentLocation) async {
+    return forecast.getForecastFromPoints(currentLocation.latitude, currentLocation.longitude);
+  }
+
+  void setLocation() async {
+    if (_location == null){
+      location.Location currentLocation = await location.getLocationFromGps();
+
+      List<forecast.Forecast> currentForecasts = await getForecasts(currentLocation);
+
+      setState(() {
+        _location = currentLocation;
+        _forecasts = currentForecasts;
+        
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -86,22 +108,15 @@ class _MyHomePageState extends State<MyHomePage> {
       body:Padding(
       padding: const EdgeInsets.all(16.0),
       child: Center(
-          child: Stack(
-            alignment: Alignment.center,
+          child: Column(
             children: [
-              Placeholder(
-                color: Colors.grey,
-                strokeWidth: 2.0,
-              ),
-              Text(
-                "Under Construction",
-                style: TextStyle(fontSize: 16, color: Colors.black),
-                textAlign: TextAlign.center,
-              ),
+              Text("${_location?.city ?? "city"}, ${_location?.state ?? "state"} ${_location?.zip ?? "zip"}"),
+              Text(_forecasts.isNotEmpty ? _forecasts[0].shortForecast : "")
             ],
           ),
         ),
       ),
     );
   }
+
 }
