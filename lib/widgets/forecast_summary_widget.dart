@@ -15,12 +15,21 @@ class ForecastSummaryWidget extends StatelessWidget {
     // Use flutter documentation to help you
     // Try add spacing and a border around the outside
     // Update the text as well, so the name, forecast, and temperature have different formatting
-    return Column(
-      children: [
-        Text(_forecast.name ?? ""),
-        Text(_forecast.shortForecast),
-        Text("${_forecast.temperature}${_forecast.temperatureUnit}")
-      ],
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        children: [
+          Text(_forecast.name ?? "",
+            style: TextStyle(fontSize: 18, fontWeight : FontWeight.bold )),
+          Text(_forecast.shortForecast,
+            style: TextStyle(fontSize: 8)),
+          Text("${_forecast.temperature}${_forecast.temperatureUnit}",
+            style: TextStyle(fontSize: 15)),
+        ],
+      ),
     );
   }
 }

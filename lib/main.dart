@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:weatherapp/scripts/location.dart' as location;
 import 'package:weatherapp/scripts/forecast.dart' as forecast;
+import 'package:weatherapp/widgets/forecast_summaries_widget.dart';
 import 'package:weatherapp/widgets/forecast_summary_widget.dart';
 import 'package:weatherapp/widgets/forecast_widget.dart';
 import 'package:weatherapp/widgets/location_widget.dart';
@@ -121,8 +122,8 @@ class _MyHomePageState extends State<MyHomePage> {
               // use Flutter documentation to help you.
               // This may clip off of the edge of the screen
               // Check forecastSummaryWidget for another TODO
-
-              _forecasts.isNotEmpty ? ForecastSummaryWidget(currentForecast: _forecasts[0]) : Text("")
+              ForecastSummaries(forecasts: _forecasts)
+              // _forecasts.isNotEmpty ? ForecastSummaryWidget(currentForecast: _forecasts[0]) : Text("")
             ],
           ),
         ),
