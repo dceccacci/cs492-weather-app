@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:weatherapp/scripts/location.dart' as location;
 import 'package:weatherapp/scripts/forecast.dart' as forecast;
+import 'package:weatherapp/widgets/forecast_summaries_widget.dart';
+import 'package:weatherapp/widgets/forecast_widget.dart';
+import 'package:weatherapp/widgets/location_widget.dart';
 
 void main() {
   runApp(const MyApp());
@@ -60,6 +63,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
 
   List<forecast.Forecast> _forecasts = [];
+  forecast.Forecast? _activeForecast;
   location.Location? _location;
 
   @override
@@ -79,9 +83,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
       List<forecast.Forecast> currentForecasts = await getForecasts(currentLocation);
 
+      
+
       setState(() {
         _location = currentLocation;
         _forecasts = currentForecasts;
+        _activeForecast = _forecasts[0];
         
       });
     }
@@ -110,8 +117,9 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Center(
           child: Column(
             children: [
-              Text("${_location?.city ?? "city"}, ${_location?.state ?? "state"} ${_location?.zip ?? "zip"}"),
-              Text(_forecasts.isNotEmpty ? _forecasts[0].shortForecast : "")
+              LocationWidget(location: _location),
+              _activeForecast != null ? ForecastWidget(forecast: _activeForecast!) : Text(""),
+              _forecasts.isNotEmpty ? ForecastSummariesWidget(forecasts: _forecasts) : Text("")
             ],
           ),
         ),
@@ -120,3 +128,4 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
 }
+
