@@ -76,8 +76,56 @@ class Forecast{
     // TODO: Keep adding to this logic to try to get rid of question marks
     // TODO: change the location in your android phone to at least 5 different location
     // with different climates so you can eliminate more question marks
+    
+    // Sunny SVG
     if (shortForecast.toLowerCase().contains("sunny")){
+      if(shortForecast.toLowerCase().contains("mostly")){
+        return "assets/weather_icons/mostly_sunny.svg";
+      }
+      else if (shortForecast.toLowerCase().contains("partly")){
+        return "assets/weather_icons/partly_sunny.svg";
+      }
       return "assets/weather_icons/sunny.svg";
+    }
+
+    // Thunderstorm SVG
+    else if (shortForecast.toLowerCase().contains("thunderstorms")){
+      return "assets/weather_icons/isolated_tstorms.svg";
+    }
+
+    // sleet
+    else if (shortForecast.toLowerCase().contains("sleet")){
+      return "assets/weather_icons/sleet_hail.svg";
+    }
+
+    // snow
+    else if (shortForecast.toLowerCase().contains("snow")){
+      return "assets/weather_icons/snow_showers.svg";
+    }
+    
+    // Rain
+    else if (shortForecast.toLowerCase().contains("rain")){
+      return "assets/weather_icons/showers.svg";
+    }
+
+    // dust
+    else if (shortForecast.toLowerCase().contains("dust")){
+      return "assets/weather_icons/dust.svg";
+    }
+
+    // clear
+    else if (shortForecast.toLowerCase().contains("clear")){
+      return "assets/weather_icons/clear.svg";
+    }
+
+    // fog
+    else if (shortForecast.toLowerCase().contains("fog")){
+      return "assets/weather_icons/fog.svg";
+    }
+    
+    // cloudy
+    else if (shortForecast.toLowerCase().contains("cloudy")){
+      return "assets/weather_icons/cloudy.svg";
     }
     else {
       return "assets/weather_icons/question.svg";
