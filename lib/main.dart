@@ -77,7 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    setLocation();
+    setLocation(null);
 
   }
 
@@ -118,9 +118,15 @@ class _MyHomePageState extends State<MyHomePage> {
     return _forecastsHourly.where((f)=>time.equalDates(f.startTime, _dailyForecasts[i].startTime)).toList();
   }
 
-  void setLocation() async {
-    if (_location == null){
-      location.Location currentLocation = await location.getLocationFromGps();
+  void setLocation(List<String>? locationList) async {
+    location.Location currentLocation;
+
+    if (locationList == null){
+      currentLocation = await location.getLocationFromGps();
+    }
+    else {
+      currentLocation = await location.getLocationFromAddress(locationList[0], locationList[1], locationList[2]) as location.Location;
+    }
 
       List<forecast.Forecast> currentHourlyForecasts = await getHourlyForecasts(currentLocation);
       List<forecast.Forecast> currentForecasts = await getForecasts(currentLocation);
@@ -135,7 +141,7 @@ class _MyHomePageState extends State<MyHomePage> {
         
         
       });
-    }
+    
   }
 
   @override
@@ -173,7 +179,7 @@ class _MyHomePageState extends State<MyHomePage> {
             filteredForecastsHourly: _filteredForecastsHourly,
             setActiveForecast: setActiveForecast,
             setActiveHourlyForecast: setActiveHourlyForecast),
-          LocationTabWidget()]
+          LocationTabWidget(setLocation: setLocation,)]
         ),
       ),
     );
@@ -183,13 +189,50 @@ class _MyHomePageState extends State<MyHomePage> {
 // TODO: Add a button to this widget that sets the active location to the phone's GPS location
 // TODO: Add 3 text fields for city state zip and a submit button that sets the location based on the user's entries
 class LocationTabWidget extends StatelessWidget {
-  const LocationTabWidget({
+
+  LocationTabWidget({
     super.key,
-  });
+    required Function setLocation,
+
+  }) : _setLocation = setLocation;
+  
+  final Function _setLocation;
+  final TextEditingController _cityController = TextEditingController();
+  final TextEditingController _stateController = TextEditingController();
+  final TextEditingController _zipController = TextEditingController();
+
+  void _sendUserInputLocation(){
+    List<String> userInputLocation = [
+      _cityController.text,
+      _stateController.text,
+      _zipController.text,
+    ];
+    _setLocation(userInputLocation);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Text("PLACEHOLDER!!!!!");
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        children: [
+          TextField(
+            controller: _cityController,
+            decoration: InputDecoration(labelText: 'City'),
+          ),
+          TextField(
+            controller: _stateController,
+            decoration: InputDecoration(labelText: "State"),
+          ),
+          TextField(
+            controller: _zipController,
+            decoration: InputDecoration(labelText: "Zip"),
+          ),
+          SizedBox(height: 20,),
+          ElevatedButton(onPressed: _sendUserInputLocation, child: Text("Submit")),
+        ],
+      )
+    );
   }
 }
 
