@@ -1,5 +1,10 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:weatherapp/scripts/location.dart' as location;
+import 'package:path_provider/path_provider.dart';
+
 
 // TODO:
 // Refer to this documentation:
@@ -8,6 +13,55 @@ import 'package:weatherapp/scripts/location.dart' as location;
 // Load the saved locations from the file on initState
 // For now you don't need to worry about deleting data or ensuring no redundant data
 // HINT: You will likely want to create a fromJson() factory and a toJson() method to the location.dart Location class
+
+class LocationsStorage {
+  // Get File Path
+  Future<String> get _localPath async {
+    final directory = await getApplicationDocumentsDirectory();
+
+    return directory.path;
+  }
+
+  // Get the saved locations json file
+  Future<File> get _localFile async {
+    final path = await _localPath;
+    return File('$path/saved_locations.json');
+  }
+
+  // Write the saved locations into the file
+  Future<File> writeLocations(List<location.Location> locations) async {
+    final file = await _localFile;
+    
+    String json = jsonEncode(locations.map((loc) => loc.toJson()).toList());
+
+    // Write the New Location into the JSON file
+    return file.writeAsString(json);
+  }
+
+  // Read the locations from file
+  Future<List<location.Location>> readLocations() async {
+    try {
+      final file = await _localFile;
+
+      // Read the file
+      final contents = await file.readAsString();
+
+      // Decode the JSON string into a list of maps
+      List<dynamic> jsonList = jsonDecode(contents);
+
+      // Convert each map into a Location object
+      List<location.Location> locations = jsonList.map((json) => location.Location.fromJson(json)).toList();
+
+      return locations;
+    } catch (e) {
+      // If encountering an error, return an empty list
+      return [];
+    }
+  }
+  
+}
+
+
 
 class LocationTabWidget extends StatefulWidget {
   const LocationTabWidget({
