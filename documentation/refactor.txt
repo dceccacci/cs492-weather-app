@@ -1,7 +1,23 @@
 Project Name: CS492 Weather App
 Refactor Date: 2/20/2025
-Refactorers: [your name1], [your name2]
+Refactorers: Devon Ceccacci, Wil Erickson
 
-Template:
-Purpose of the Refactor: [Explain why the refactoring was necessary. Example: "The purpose of this refactor was to simplify the authentication logic and improve readability."]
-Scope: [Define which parts of the project were refactored. Example: "Refactored the user authentication module and the database query handling."]
+Template: 
+Purpose of the Refactor: 
+    1. Delete commented code; unnesesarry clutters code.
+    2. Fixed Typo's; helps to ensure that if variables are used later, they are calling the same thing.
+    3. Moved MyHomePage and MyHomePageState to its own files: forecast_page.dart;  because main.dart was over crowded, doing to much in one widget.
+    4. Renamed MyHomePage and MyHomePageState to ForecastPage and ForecastPageState; Allows a new homepage widget to be added later if needed, that won't require refactoring later of the names.
+
+    5. SavedLocationsWidget, SavedLocationEditWidget, SavedLocationWidget to location_saved_widget; To many widgets in location_tab_widget, and since these are all similar, they can go into their own file.
+    6. Create a widgets/location/ folder and widgets/forecast/ folder to hold similar widget files; since there are so many files that handle similar things, if more and more are added, it could crowd the folder with files. Adding sub folders allows a user to more easily find certain widgets, instead of trying to sift through them all.
+    7. Removing the math.dart file, changed the line forecast_widget.dart, it was used for the dewpoint, but you can use the toStringAsFixed(2) to do the same functionality; Its unnesesarry to do the math when there is a built in function to do the same thing. 
+    8. Moved the many many many if statements for finding a icon into its own file, by making a get function inbetween, getIconPath calls getIcon now, which is in its own file. Doing this way, we dont have to change any of the getIconPath calls in the rest of the code, and later, if we decide to change how logic is used to find icons, we can do that in the newly made file / function.
+
+Scope: 
+    1. location_tab_widget: typo in LocationInputWidget inside of the build function _LocationTabWidgetState
+    2. main.dart: moved widgets out to their own files.
+    3. Put many of the location_tab_widgets into their own files.
+    4. Adding new folders in widgets to hold similar widget files.
+    5. made a new getIcon file to hold logic of getting a icon image.
+
