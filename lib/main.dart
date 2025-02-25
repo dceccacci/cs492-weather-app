@@ -5,13 +5,14 @@ import 'package:weatherapp/widgets/location/location_tab_widget.dart';
 import 'package:weatherapp/providers/location_provider.dart';
 import 'package:weatherapp/providers/forecast_provider.dart';
 
+import 'utils/theme_mode.dart' as themeMode;
+
 // TODOS: The TODOs are located in Assignment8-1 in canvas assignments
 void main() {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => ForecastProvider()),
-    ChangeNotifierProvider(
-        create: (context) => LocationProvider(
-            Provider.of<ForecastProvider>(context, listen: false))),
+    ChangeNotifierProvider(create: (context) => LocationProvider(Provider.of<ForecastProvider>(context, listen: false))),
+    ChangeNotifierProvider(create: (context) => themeMode.ThemeNotifier()),
   ], child: const MyApp()));
 }
 
@@ -22,14 +23,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: title,
-      darkTheme: ThemeData.dark(),
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 143, 216, 233)),
-        useMaterial3: true,
-      ),
-      home: MyHomePage(title: title),
+    return Consumer<themeMode.ThemeNotifier>(
+      builder: (context, themeNotifier, child) {
+        return MaterialApp(
+          title: title,
+          theme: themeMode.lightTheme,
+          darkTheme: themeMode.darkTheme,
+          themeMode: themeNotifier.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+          home: MyHomePage(title: title),
+        );
+      },
     );
   }
 }
@@ -55,7 +58,17 @@ class _MyHomePageState extends State<MyHomePage> {
             title: Text(widget.title),
             bottom: TabBar(tabs: [
               Tab(icon: Icon(Icons.sunny_snowing)),
-              Tab(icon: Icon(Icons.edit_location_alt))
+              Tab(icon: Icon(Icons.edit_location_alt)),
+              Consumer<themeMode.ThemeNotifier>(
+                builder: (context, themeNotifier, child) {
+                  return Switch(
+                      value: themeNotifier.isDarkMode,
+                      onChanged: (value) {
+                        themeNotifier.toggleTheme();
+                      },
+                    );
+                },
+               ),
             ])),
         body: TabBarView(children: [ForecastTabWidget(), LocationTabWidget()]),
       ),
