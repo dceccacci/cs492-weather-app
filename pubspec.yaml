@@ -28,6 +28,9 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+
+  cloud_firestore: 
+
   flutter:
     sdk: flutter
 
@@ -43,6 +46,7 @@ dependencies:
   sqflite: ^2.4.1
   provider: ^6.1.2
   shared_preferences: ^2.5.2
+  flutter_colorpicker: ^1.1.0
 
 dev_dependencies:
   flutter_test:

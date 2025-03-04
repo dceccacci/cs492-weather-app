@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:provider/provider.dart';
 import 'package:weatherapp/providers/settings_provider.dart';
 import 'package:weatherapp/widgets/forecast/forecast_tab_widget.dart';
 import 'package:weatherapp/widgets/location/location_tab_widget.dart';
 import 'package:weatherapp/providers/location_provider.dart';
 import 'package:weatherapp/providers/forecast_provider.dart';
-import 'package:weatherapp/themes/themes.dart';
 
 // TODOS: The TODOs are located in Assignment8-1 in canvas assignments
 void main() {
@@ -25,13 +25,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     var settingsProvider = Provider.of<SettingsProvider>(context);
 
     return MaterialApp(
       title: title,
-      theme: lightTheme,
-      darkTheme: darkTheme,
+      theme: settingsProvider.lightTheme ?? ThemeData.light(),
+      darkTheme: settingsProvider.darkTheme ?? ThemeData.dark(),
       themeMode: settingsProvider.darkMode ? ThemeMode.dark : ThemeMode.light,
       home: MyHomePage(title: title),
     );
@@ -50,13 +49,17 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
+    var settingsProvider = Provider.of<SettingsProvider>(context);
+
     return DefaultTabController(
       length: 2,
       initialIndex: 0,
       child: Scaffold(
+        endDrawer: SettingsDrawer(settingsProvider: settingsProvider),
         appBar: AppBar(
             backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-            title: TitleWidget(widget: widget),
+            actions: [SettingsButton()],
+            title: Text(widget.title),
             bottom: TabBar(tabs: [
               Tab(icon: Icon(Icons.sunny_snowing)),
               Tab(icon: Icon(Icons.edit_location_alt))
@@ -67,29 +70,63 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class TitleWidget extends StatelessWidget {
-  const TitleWidget({
+class SettingsButton extends StatelessWidget {
+  const SettingsButton({
     super.key,
-    required this.widget,
   });
-
-  final MyHomePage widget;
 
   @override
   Widget build(BuildContext context) {
+    return IconButton(
+        icon: Icon(Icons.settings),
+        onPressed: () {
+          Scaffold.of(context).openEndDrawer();
+        });
+  }
+}
 
+class SettingsDrawer extends StatefulWidget {
+  const SettingsDrawer({
+    super.key,
+    required this.settingsProvider,
+  });
+
+  final SettingsProvider settingsProvider;
+
+  @override
+  State<SettingsDrawer> createState() => _SettingsDrawerState();
+}
+
+class _SettingsDrawerState extends State<SettingsDrawer> {
+  // create some values
+
+  @override
+  Widget build(BuildContext context) {
+    Color currentColor = Color(0xff443a49);
     var settingsProvider = Provider.of<SettingsProvider>(context);
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(widget.title),
+    void changeColor(Color color) {
+      currentColor = color;
+    }
+
+    return Drawer(
+      child: ListView(children: [
         Switch(
-        value: settingsProvider.darkMode,
-        onChanged: (bool value) {
-            settingsProvider.toggleMode();
-        }),
-      ],
+            value: widget.settingsProvider.darkMode,
+            onChanged: (bool value) {
+              widget.settingsProvider.toggleMode();
+            }),
+        Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: ColorPicker(
+            pickerColor: settingsProvider.getPickerColor(),
+            onColorChanged: changeColor,
+          ),
+        ),
+        ElevatedButton(
+            onPressed: () => settingsProvider.setColor(currentColor),
+            child: Text("Set Color"))
+      ]),
     );
   }
 }
