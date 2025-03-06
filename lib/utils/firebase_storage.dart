@@ -35,13 +35,24 @@ Future<Map<String, dynamic>?> getEntryByIndex(
 }
 
 Future<void> deleteEntryWhere(
-    String collectionName, String fieldName, dynamic value) async {
-  QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-      .collection(collectionName)
-      .where(fieldName, isEqualTo: value)
-      .get();
+  String collectionName, String fieldName, dynamic value) async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection(collectionName)
+        .where(fieldName, isEqualTo: value)
+        .get();
 
-  for (DocumentSnapshot doc in querySnapshot.docs) {
-    await doc.reference.delete();
-  }
+    for (DocumentSnapshot doc in querySnapshot.docs) {
+      await doc.reference.delete();
+    }
+}  
+    
+Future<void> updateLocationFieldWhere(String database, String idField, String? idValue, String updateField, String? updateValue) async {
+  QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('locations').where(idField, isEqualTo: idValue).get();
+    for (var doc in querySnapshot.docs) {
+      if (updateField != null) {
+        await doc.reference.update({updateField: updateValue});
+      }
+    }
 }
+
+

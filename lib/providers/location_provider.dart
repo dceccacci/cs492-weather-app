@@ -1,8 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:weatherapp/models/location.dart' as location;
 import 'package:weatherapp/providers/forecast_provider.dart';
 import 'package:weatherapp/utils/firebase_storage.dart' as fs;
-import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:cloud_firestord_firestore.dart';
 import 'package:weatherapp/utils/get_image.dart';
 
 // TODOS:
@@ -10,7 +11,7 @@ import 'package:weatherapp/utils/get_image.dart';
 // when you save an image to firebase, include a url field
 // when a new active location is selected, check if it exists, if so use that url
 // if not, query the pexels api
-
+// field name: `url`
 
 class LocationProvider extends ChangeNotifier {
   final ForecastProvider forecastProvider;
@@ -34,8 +35,13 @@ class LocationProvider extends ChangeNotifier {
 
   void setLocation(location.Location loc) async {
     activeLocation = loc;
-    if (activeLocation != null){
+    if (activeLocation != null && (activeLocation!.url == null || activeLocation!.url == "")){
       activeLocationImg = await getImageByQuery("${activeLocation!.city} ${activeLocation!.state}");
+      
+      // Save this to the location object
+      activeLocation!.url = activeLocationImg;
+      fs.updateLocationFieldWhere("locations", "zip", activeLocation!.zip, "url", activeLocationImg);
+
     }
     
     notifyListeners();
@@ -43,6 +49,7 @@ class LocationProvider extends ChangeNotifier {
       forecastProvider.initForecasts(activeLocation!);
     }
   }
+
 
   Future<void> setLocationFromAddress(
       String city, String state, String zip) async {
@@ -78,4 +85,5 @@ class LocationProvider extends ChangeNotifier {
   Future<void> deleteLocation(location.Location locToDelete) async {
     fs.deleteEntryWhere("locations", "zip", locToDelete.zip);
   }
+  
 }
