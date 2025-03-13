@@ -1,20 +1,35 @@
 import 'package:test/test.dart';
 import 'package:weatherapp/models/location.dart';
 
-// Creating a location object using the normal constructor
-
-// Getting json data from a Location object (fromJson() function)
-// Comparing two locations for equality (use an equal example which returns True, and an unequal example which returns false)
 
 void main(){
   test("testing location toString", testToString);
   // Creating a Location object from a json (toJson() function)
   test("testing toJson", testToJson);
   // Getting json data from a Location object (fromJson() function)
+  test("testing fromJson", testFromJson);
+  // Comparing two locations for equality (use an equal example which returns True, and an unequal example which returns false)
 
 }
 
 void testToJson() {
+  Location location = getMockLocations();
+  Map<String, dynamic> json = 
+    {
+      "state": "Oregon",
+      "city": "Bend",
+      "zip": "97703",
+      "latitude": 44.0,
+      "longitude": 121.0,
+      "url": "http://www.example.com"
+    };
+  
+  Map<String, dynamic> locationJson = location.toJson();
+  expect(locationJson, json);
+  
+}
+
+void testFromJson() {
   Location location = getMockLocations();
   Map<String, dynamic> json = 
     {
